@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>預約登記系統</title>
+    <style>
+        body {
+            font-family: 'Microsoft JhengHei', '微軟正黑體', 'PingFang TC', 'Heiti TC', Arial, sans-serif;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 16px;
+            background-color: #f5f5f5;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        .container {
+            background-color: white;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 24px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        select, input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 12px;
+            background-color: white;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+        select:hover, input:hover {
+            border-color: #999;
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            margin-top: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button[style*="background-color: #2196F3"]:hover {
+            background-color: #1976D2;
+        }
+        #result {
+            margin-top: 16px;
+            padding: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            display: none;
+            background-color: #f9f9f9;
+        }
+        .price {
+            font-size: 24px;
+            color: #4CAF50;
+            font-weight: bold;
+            text-align: center;
+            margin: 12px 0;
+        }
+        .price-detail {
+            margin: 12px 0;
+            padding: 12px;
+            background-color: white;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .price-detail div {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+        .hint {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .payment-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 12px 0;
+            padding: 12px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+        }
+        .payment-info span {
+            font-weight: bold;
+        }
+        @media screen and (min-width: 768px) {
+            body {
+                padding: 24px;
+                font-size: 18px;
+            }
+            .container {
+                padding: 24px;
+            }
+            h1 {
+                font-size: 32px;
+                margin-bottom: 36px;
+            }
+            label {
+                font-size: 20px;
+            }
+            select, input {
+                font-size: 18px;
+            }
+            button {
+                font-size: 20px;
+                padding: 16px 32px;
+            }
+            .price {
+                font-size: 32px;
+            }
+            .price-detail {
+                font-size: 18px;
+            }
+            .hint {
+                font-size: 16px;
+            }
+            .payment-info {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <h1>預約登記系統</h1>
+    <div class="form-group">
+        <label>姓名：</label>
+        <input type="text" id="customerName" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 18px; margin-bottom: 12px;" placeholder="請輸入姓名">
+    </div>
+    <div class="form-group">
+        <label>開始時間：</label>
+            <select id="startYear" required></select>
+            <select id="startMonth" required></select>
+            <select id="startDay" required></select>
+            <select id="startHour" required></select>
+            <select id="startMinute" required></select>
+    </div>
+    <div class="form-group">
+        <label>結束時間：</label>
+            <select id="endYear" required></select>
+            <select id="endMonth" required></select>
+            <select id="endDay" required></select>
+            <select id="endHour" required></select>
+            <select id="endMinute" required></select>
+    </div>
+    <div class="form-group">
+        <label>幾位成人?</label>
+        <select id="peopleCount" required>
+            <option value="">請選擇人數</option>
+            <option value="3">3人</option>
+            <option value="4">4人</option>
+            <option value="5">5人</option>
+            <option value="6">6人</option>
+            <option value="7">7人</option>
+            <option value="8">8人</option>
+            <option value="9">9人</option>
+            <option value="10">10人</option>
+            <option value="11">11人</option>
+            <option value="12">12人</option>
+            <option value="13">13人</option>
+            <option value="14">14人</option>
+            <option value="15">15人</option>
+            <option value="16">16人</option>
+            <option value="17">17人</option>
+            <option value="18">18人</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>幾位1~6歲孩童?</label>
+        <select id="childCount" required>
+            <option value="0">0位</option>
+            <option value="1">1位</option>
+            <option value="2">2位</option>
+            <option value="3">3位</option>
+            <option value="4">4位</option>
+            <option value="5">5位</option>
+            <option value="6">6位</option>
+            <option value="7">7位</option>
+            <option value="8">8位</option>
+            <option value="9">9位</option>
+            <option value="10">10位</option>
+            <option value="11">11位</option>
+            <option value="12">12位</option>
+            <option value="13">13位</option>
+            <option value="14">14位</option>
+            <option value="15">15位</option>
+            <option value="16">16位</option>
+        </select>
+    </div>
+    <button onclick="calculatePrice()">試算入場費</button>
+    <div id="priceResult" style="display: none;">
+        <div class="price-detail" style="margin-bottom: 20px; padding: 15px; background-color: #e8e8e8; border-radius: 8px; line-height: 1.8;">
+            <div>您好，向您確認訂位資訊，您的預約檔期為：</div>
+            <div style="white-space: pre-line; margin: 10px 0;"><br></div>
+            <div id="customerNameConfirm" style="margin: 10px 0;"></div>
+            <div id="timeRangeConfirm" style="margin: 10px 0;"></div>
+            <div id="durationConfirm" style="margin: 10px 0;"></div>
+            <div style="white-space: pre-line; margin: 10px 0;"><br></div>
+            <div style="margin: 10px 0;">請問是否正確呢?</div>
+            <div style="white-space: pre-line; margin: 10px 0;"><br></div>
+            <div style="margin: 10px 0;">正確的話再請於兩天內</div>
+            <div style="margin: 10px 0;">匯款「$500元 定金」保留檔期哦！</div>
+            <div style="white-space: pre-line; margin: 10px 0;"><br></div>
+            <div style="margin: 10px 0;">匯款方式: 中華郵政（700)　00214550195600</div>
+            <div style="white-space: pre-line; margin: 10px 0;"><br></div>
+            <div style="margin: 10px 0;">🌟沒辦法轉賬：找郵局ATM，點選「無卡存款」，輸入我們相對應的帳號後進行存款，完成後記得拍收據或截圖給小幫手</div>
+            <div style="white-space: pre-line; margin: 10px 0;"><br></div>
+            <div style="margin: 10px 0; color: #ff4444;">⚠️提醒您，定金匯款完成後，將不得做任何更改，包括「取消+退費」、「改期」、「縮短時間」、「更改場地」。若玩家未如期抵達，保留檔期的$500定金不得返還或改期。</div>
+        </div>
+        <div class="price-detail" style="margin-bottom: 20px; padding: 15px; background-color: #e8e8e8; border-radius: 8px; line-height: 1.8;">
+            <div style="margin: 10px 0;">當天入場前一個小時，支付<span id="pricePerPersonConfirm">0</span>×人數+<span id="depositMinusDownConfirm">0</span>（總入場費+押金尾款），就會給您電子鎖的密碼。</div>
+            <div style="margin: 10px 0;"><br></div>
+            <div style="margin: 10px 0;">然後進場後會抽一個折扣扭蛋，裡面會有打折的優惠，再拍照給我~</div>
+            <div style="margin: 10px 0;"><br></div>
+            <div>您們遊玩結束離場後，我們去整理完，就會把<span id="depositRefundConfirm">0</span>元(定+押金)，以及折扣後的差價一起退還給您🎉</div>
+        </div>
+        <div class="price-detail" style="margin-bottom: 20px; padding: 15px; background-color: #e8e8e8; border-radius: 8px; line-height: 1.8;">
+            <div style="margin: 10px 0;">沒問題的話，轉完定金再記得跟我說一下末五碼</div>
+        </div>
+        <div class="price-detail" style="margin-bottom: 20px; padding: 15px; background-color: #e8e8e8; border-radius: 8px; line-height: 1.8;">
+            <div style="margin: 10px 0;">您好，已收取500元定金，為您保留檔期，記入本店預約行事曆，感謝您預約嘻鬧防空洞🎉</div>
+            <div style="margin: 10px 0;"><br></div>
+            <div id="reservationDateConfirm" style="margin: 10px 0;"></div>
+            <div id="reservationTimeConfirm" style="margin: 10px 0;"></div>
+            <div style="margin: 10px 0;">地點：台中市中區成功路10號3樓B室(弘爺漢堡火箭店旁邊的電梯上3樓，出電梯右手邊)</div>
+            <div style="margin: 10px 0;"><br></div>
+            <div style="margin: 10px 0;">📢室內場地入內請脫鞋~</div>
+            <div style="margin: 10px 0;"><br></div>
+            <div style="margin: 10px 0; color: #ff4444;">⚠️提醒您，定金匯款完成後，將不得做任何更改，包括「取消+退費」、「改期」、「縮短時間」、「更改場地」。若玩家未如期抵達，保留檔期的$500定金不得返還或改期。</div>
+            <div style="margin: 10px 0;"><br></div>
+            <div style="margin: 10px 0; color: #4CAF50;">✅場內設有24H監控，「人數若有更改請務必告知」，避免影響個人權益</div>
+            <div style="margin: 10px 0;"><br></div>
+            <div style="margin: 10px 0;">-貼心告知-</div>
+            <div style="margin: 10px 0;">場內吸菸（包括電子煙）：押金全扣</div>
+            <div style="margin: 10px 0;">室內嘔吐、大髒汙沒清(20CM*20CM)：扣$1000押金作為清潔費，剩餘返還</div>
+        </div>
+        <div class="price-detail" style="margin-bottom: 20px; padding: 15px; background-color: #e8e8e8; border-radius: 8px; line-height: 1.8;">
+            <div style="margin: 10px 0;">感謝預約，期待您的光臨！🕹️👾🎯</div>
+            <button onclick="confirmDeposit()" style="background-color: #FF9800; margin-top: 10px;">登記定金</button>
+        </div>
+        <div class="price-detail" style="margin-bottom: 20px; padding: 15px; background-color: #e8e8e8; border-radius: 8px; line-height: 1.8;">
+            <div>您好，提醒您，今天<span id="reminderStartTime">14：30</span>有預約遊玩場地，再請記得於預約時間前匯款哦！</div>
+            <div style="margin: 10px 0;"><br></div>
+            <div style="margin: 10px 0;">金額是<span id="reminderPricePerPerson">0</span>元×人數+<span id="reminderDepositMinusDown">0</span>元（總入場費+押金尾款），密碼會在入場前十分鐘傳送~</div>
+            <div style="margin: 10px 0;">非常感謝🍿</div>
+        </div>
+        <div class="price-detail" style="margin-bottom: 20px; padding: 15px; background-color: #e8e8e8; border-radius: 8px; line-height: 1.8;">
+            <div>您好：</div>
+            <div style="margin: 10px 0;">款項已確認付清，旅程即將開始，密碼來囉🎉</div>
+            <div style="margin: 10px 0;"><br></div>
+            <div id="playTimeConfirm" style="margin: 10px 0;"></div>
+            <div style="margin: 10px 0;">✅地點：台中市中區成功路10號3樓B室(直接搭電梯到三樓)</div>
+            <div style="margin: 10px 0;"><br></div>
+            <div style="margin: 10px 0;">✅電子鎖密碼:</div>
+            <div style="margin: 10px 0;">➞電子鎖使用方式：觸摸一下面板，輸入密碼後再「按＃字鍵」就可以囉！</div>
+            <div style="margin: 10px 0;">*不要摸指紋鎖的地方喔！會鎖住~</div>
+            <div style="margin: 10px 0;"><br></div>
+            <div style="margin: 10px 0;">✅密碼有效期：</div>
+            <div id="passwordStartTime" style="margin: 10px 0;">2025-04-16 15：50  至</div>
+            <div id="passwordEndTime" style="margin: 10px 0;">2025-04-16 19：00</div>
+            <div style="margin: 10px 0;"><br></div>
+            <div style="margin: 10px 0;">遊玩時間結束後，逗留場地超過10分鐘以上，會以每半小時計算來收取場地租金。</div>
+            <div style="margin: 10px 0;"><br></div>
+            <div style="margin: 10px 0;">退房前請幫幫小幫手:</div>
+            <div style="margin: 10px 0;">關閉電器、關電燈，關冷氣，關街機，關音樂機，將門確實闔上。</div>
+            <div style="margin: 10px 0;">感謝您的配合，祝您防空洞之旅探險愉快！❤️</div>
+        </div>
+        <div class="price-detail" style="margin-bottom: 20px; padding: 15px; background-color: #e8e8e8; border-radius: 8px; line-height: 1.8;">
+            <div style="margin: 10px 0;">待會用這個密碼就可以進去囉！</div>
+            <div style="margin: 10px 0;">機台的使用說明都在桌上的紙裡，麻將桌的在旁邊的牆壁上，有問題再問我~</div>
+        </div>
+        <div class="price-detail" style="margin-bottom: 20px; padding: 15px; background-color: #e8e8e8; border-radius: 8px; line-height: 1.8;">
+            <div style="margin: 10px 0;">入場記得脫鞋子喔！</div>
+            <div style="margin: 10px 0;">非常感謝</div>
+        </div>
+        <button onclick="confirmFinalPayment()" style="background-color: #FF9800; margin-top: 10px;">登記尾款</button>
+        <div class="price">尾款匯款金額(總入場費+押金尾款)：<span id="totalPrice">0</span> 元</div>
+        <div class="price-detail">
+            <div>時段：<span id="timeRange" style="user-select: all;">-</span></div>
+            <div>方案：<span id="timeSlot">-</span></div>
+            <div>預約時數：<span id="duration">0</span> 小時</div>
+            <div>每人入場費：<span id="pricePerPerson">0</span> 元</div>
+            <div>總入場費：<span id="priceFormula">-</span> = <span id="totalAdmission">0</span> 元</div>
+            <div class="payment-info">
+                <span>定金：500 元</span>
+                <span>成人押金(含定金)：<span id="deposit">0</span> 元</span>
+                <span>兒童押金：<span id="childDeposit">0</span> 元</span>
+                <span>尾款匯款金額(總入場費+押金尾款)：<span id="finalPayment">0</span> 元</span>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>扭蛋折數：</label>
+        <select id="discountRate" required>
+            <option value="1">無折扣</option>
+            <option value="0.7">7折</option>
+            <option value="0.75">75折</option>
+            <option value="0.8">8折</option>
+            <option value="0.85">85折</option>
+            <option value="0.9">9折</option>
+            <option value="0.95">95折</option>
+        </select>
+    </div>
+    <button onclick="calculateRefund()" style="background-color: #2196F3;">試算退款金額</button>
+    <div id="refundResult" style="display: none;">
+        <div class="price-detail">
+            <div>折前金額：<span id="originalAmount">0</span> 元</div>
+            <div>折後金額：<span id="discountedAmount">0</span> 元</div>
+            <div>扭蛋折扣後差額：<span id="discountDifference">0</span> 元</div>
+            <div>總押金(含定金)：<span id="depositAndDown">0</span> 元</div>
+            <div class="price">退款總額(差額+押定金)：<span id="refundAmount">0</span> 元</div>
+            <button onclick="confirmRefund()" style="background-color: #FF9800; margin-top: 10px;">登記退款</button>
+        </div>
+    </div>
+    </div>
+
+    <script>
+        // 假日列表
+        const holidays = {
+            '2024': {
+                '1': {
+                    '1': '元旦',
+                    '2': '元旦補假'
+                },
+                '2': {
+                    '8': '小年夜',
+                    '9': '除夕',
+                    '10': '春節',
+                    '11': '春節',
+                    '12': '春節',
+                    '13': '春節',
+                    '14': '春節',
+                    '28': '228紀念日'
+                },
+                '3': {
+                    '1': '228紀念日補假'
+                },
+                '4': {
+                    '4': '兒童節',
+                    '5': '清明節'
+                },
+                '5': {
+                    '1': '勞動節'
+                },
+                '6': {
+                    '10': '端午節'
+                },
+                '9': {
+                    '17': '中秋節'
+                },
+                '10': {
+                    '10': '國慶日',
+                    '11': '國慶日補假'
+                },
+                '12': {
+                    '25': '行憲紀念日'
+                }
+            },
+            '2025': {
+                '1': {
+                    '1': '元旦'
+                },
+                '2': {
+                    '28': '228紀念日'
+                },
+                '4': {
+                    '4': '兒童節',
+                    '5': '清明節'
+                },
+                '5': {
+                    '1': '勞動節'
+                },
+                '6': {
+                    '10': '端午節'
+                },
+                '9': {
+                    '17': '中秋節'
+                },
+                '10': {
+                    '10': '國慶日'
+                },
+                '12': {
+                    '25': '行憲紀念日'
+                }
+            }
+        };
+
+        // 初始化假日列表
+        function initializeHolidays() {
+            const currentYear = new Date().getFullYear();
+            const nextYear = currentYear + 1;
+            
+            // 確保當前年份和下一年的假日列表存在
+            if (!holidays[currentYear]) {
+                holidays[currentYear] = {};
+            }
+            if (!holidays[nextYear]) {
+                holidays[nextYear] = {};
+            }
+        }
+
+        // 在頁面載入時初始化假日列表
+        window.onload = function() {
+            initializeHolidays();
+            // 獲取當前日期
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const currentMonth = now.getMonth() + 1;
+            const currentDay = now.getDate();
+            const currentHour = now.getHours();
+            const currentMinute = now.getMinutes();
+            const roundedMinute = currentMinute >= 30 ? 30 : 0;
+
+            // 初始化時間選單
+            function initializeTimeSelects() {
+                // 年份選單
+                ['startYear', 'endYear'].forEach(id => {
+                    const select = document.getElementById(id);
+                    select.innerHTML = '<option value="">選擇年份</option>';
+                    const currentYear = new Date().getFullYear();
+                    select.add(new Option(currentYear + '年', currentYear));
+                    select.add(new Option((currentYear + 1) + '年', currentYear + 1));
+                    select.value = currentYear;
+                });
+
+                // 月份選單
+                ['startMonth', 'endMonth'].forEach(id => {
+                    const select = document.getElementById(id);
+                    select.innerHTML = '<option value="">選擇月份</option>';
+                    for (let i = 1; i <= 12; i++) {
+                        select.add(new Option(i + '月', i));
+                    }
+                    select.value = currentMonth;
+                });
+
+                // 日期選單
+                ['startDay', 'endDay'].forEach(id => {
+                    const select = document.getElementById(id);
+                    select.innerHTML = '<option value="">選擇日期</option>';
+                    const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
+                    for (let i = 1; i <= daysInMonth; i++) {
+                        select.add(new Option(i + '日', i));
+                    }
+                    select.value = currentDay;
+                });
+
+                // 小時選單
+                ['startHour', 'endHour'].forEach(id => {
+                    const select = document.getElementById(id);
+                    select.innerHTML = '<option value="">選擇時</option>';
+                    for (let i = 0; i <= 23; i++) {
+                        select.add(new Option(i + '時', i));
+                    }
+                    select.value = currentHour;
+                });
+
+                // 分鐘選單
+                ['startMinute', 'endMinute'].forEach(id => {
+                    const select = document.getElementById(id);
+                    select.innerHTML = '<option value="">選擇分</option>';
+                    select.add(new Option('0分', '0'));
+                    select.add(new Option('30分', '30'));
+                    select.value = '0';
+                });
+            }
+
+            // 初始化所有選單
+            initializeTimeSelects();
+
+            // 綁定事件監聽器
+            ['start', 'end'].forEach(prefix => {
+                document.getElementById(prefix + 'Year').addEventListener('change', () => updateDays(prefix));
+                document.getElementById(prefix + 'Month').addEventListener('change', () => updateDays(prefix));
+            });
+
+            // 初始化日期選單
+            updateDays('start');
+            updateDays('end');
+
+            // 人數選單
+            const peopleSelect = document.getElementById('peopleCount');
+            peopleSelect.innerHTML = '<option value="">請選擇人數</option>';
+            for (let i = 3; i <= 18; i++) {
+                peopleSelect.add(new Option(i + '人', i));
+            }
+            peopleSelect.value = '';
+
+            // 移除手動輸入人數的事件監聽
+            const manualPeopleCount = document.getElementById('childCount');
+            manualPeopleCount.addEventListener('change', function() {
+                const value = parseFloat(this.value);
+                if (value >= 0 && value <= 18) {
+                    // 移除清空成人選單的邏輯
+                }
+            });
+
+            peopleSelect.addEventListener('change', function() {
+                // 移除清空孩童選單的邏輯
+            });
+        }
+
+        // 更新日期選單的函數
+        function updateDays(prefix) {
+            const year = document.getElementById(prefix + 'Year').value;
+            const month = document.getElementById(prefix + 'Month').value;
+            const daySelect = document.getElementById(prefix + 'Day');
+            const currentValue = daySelect.value;
+            
+            daySelect.innerHTML = '<option value="">選擇日期</option>';
+            
+            if (year && month) {
+                const daysInMonth = new Date(year, month, 0).getDate();
+                for (let i = 1; i <= daysInMonth; i++) {
+                    const option = new Option(i + '日', i);
+                    daySelect.add(option);
+                }
+                
+                if (currentValue && currentValue <= daysInMonth) {
+                    daySelect.value = currentValue;
+                }
+            }
+        }
+
+        // 判斷是否為假日的函數
+        function isHoliday(year, month, day) {
+            // 先檢查是否為週末
+            const date = new Date(year, month - 1, day);
+            const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+            
+            // 再檢查是否為國定假日
+            const yearHolidays = holidays[year.toString()];
+            if (yearHolidays) {
+                const monthHolidays = yearHolidays[month.toString()];
+                if (monthHolidays && monthHolidays[day.toString()]) {
+                    return true;
+                }
+            }
+            
+            return isWeekend;
+        }
+
+        // 計算價格的函數
+        function calculatePrice() {
+            const startYear = document.getElementById('startYear').value;
+            const startMonth = document.getElementById('startMonth').value;
+            const startDay = document.getElementById('startDay').value;
+            const startHour = document.getElementById('startHour').value;
+            const startMinute = document.getElementById('startMinute').value;
+            const endYear = document.getElementById('endYear').value;
+            const endMonth = document.getElementById('endMonth').value;
+            const endDay = document.getElementById('endDay').value;
+            const endHour = document.getElementById('endHour').value;
+            const endMinute = document.getElementById('endMinute').value;
+            const peopleCountSelect = document.getElementById('peopleCount').value;
+            const childCountSelect = document.getElementById('childCount').value;
+            const adultCount = peopleCountSelect ? parseFloat(peopleCountSelect) : 0;
+            const childCount = childCountSelect ? parseFloat(childCountSelect) : 0;
+            const effectivePeopleCount = parseFloat((adultCount + (childCount * 0.8)).toFixed(1));
+
+            // 檢查人數是否已選擇
+            if (!peopleCountSelect) {
+                alert('我們預約最少需要3位成人喔');
+                return;
+            }
+
+            if (adultCount < 3) {
+                alert('我們預約最少需要3位成人喔');
+                return;
+            }
+
+            const startDate = new Date(startYear, startMonth - 1, startDay);
+            const isWeekend = isHoliday(startYear, startMonth, startDay);
+
+            // 檢查結束時間是否早於開始時間
+            const startDateTime = new Date(startYear, startMonth - 1, startDay, startHour, startMinute);
+            const endDateTime = new Date(endYear, endMonth - 1, endDay, endHour, endMinute);
+            
+            if (endDateTime <= startDateTime) {
+                alert('結束時間必須晚於開始時間');
+                return;
+            }
+
+            // 判斷時段類型
+            let timeSlot = '';
+            let pricePerPerson = 0;
+            let overtimeFee = 0;
+            let formula = '';
+            let hours = 0;
+
+            // 計算使用時數
+            const hoursDiff = (endDateTime - startDateTime) / (1000 * 60 * 60);
+            hours = Math.floor(hoursDiff);
+            const minutes = Math.round((hoursDiff - hours) * 60);
+            
+            if (minutes !== 0 && minutes !== 30) {
+                alert('預約時長必須為整數小時或半小時');
+                return;
+            }
+
+            if (hours < 3) {
+                alert('總預約時間不能小於3小時');
+                return;
+            }
+
+            // 將字串轉換為數字
+            const startHourNum = parseInt(startHour);
+            const startMinuteNum = parseInt(startMinute);
+            const endHourNum = parseInt(endHour);
+            const endMinuteNum = parseInt(endMinute);
+
+            // 先判斷是否為大夜時段（以開始時間判斷）
+            if ((startHourNum === 0 && startMinuteNum === 0) || (startHourNum === 0 && startMinuteNum === 30)) {
+                // 大夜時段必須預約完整的8小時
+                if ((endHourNum === 8 && endMinuteNum === 0) || (endHourNum === 8 && endMinuteNum === 30)) {
+                    timeSlot = isWeekend ? '假日大夜8小時' : '平日大夜8小時';
+                    pricePerPerson = isWeekend ? 680 : 640;
+                    formula = `${effectivePeopleCount}*(${isWeekend ? 680 : 640})`;
+                    hours = 8;
+                } else {
+                    alert('我們大夜時段要預約一整段8小時喔，00:00~08:00 或 00:30~08:30，謝謝');
+                    return;
+                }
+            }
+            // 如果開始時間在00:00-08:00之間，但不是完整的大夜時段
+            else if (startHourNum >= 0 && startHourNum < 8) {
+                alert('我們大夜時段要預約一整段8小時喔，00:00~08:00 或 00:30~08:30，謝謝');
+                return;
+            }
+            // 再判斷是否為中班時段（以開始時間判斷）
+            else if (startHourNum >= 16) {
+                // 中班時段可以預約到00:30之前，或是同一天內的任何時間
+                if (endHourNum <= 0 || (endHourNum === 0 && endMinuteNum <= 30) || 
+                    (startYear === endYear && startMonth === endMonth && startDay === endDay)) {
+                    timeSlot = isWeekend ? '假日中班' : '平日中班';
+                    if (hours <= 3) {
+                        pricePerPerson = (isWeekend ? 450 : 420) * (hours / 3);
+                        formula = hours === 3 ? `${effectivePeopleCount}*(${isWeekend ? 450 : 420})` : `${effectivePeopleCount}*(${isWeekend ? 450 : 420}/3*${hours})`;
+                        timeSlot += `${hours}小時`;
+                    } else if (hours === 4) {
+                        pricePerPerson = (isWeekend ? 450 : 420) + 80;
+                        formula = `${effectivePeopleCount}*(${isWeekend ? 450 : 420}+80)`;
+                        timeSlot += '3小時+1小時加時';
+                    } else if (hours === 5) {
+                        pricePerPerson = isWeekend ? 620 : 600;
+                        formula = `${effectivePeopleCount}*(${isWeekend ? 620 : 600})`;
+                        timeSlot += '5小時';
+                    } else {
+                        const overtimeHours = hours - 5;
+                        pricePerPerson = (isWeekend ? 620 : 600) + overtimeHours * 80;
+                        formula = `${effectivePeopleCount}*(${isWeekend ? 620 : 600}+${overtimeHours === 1 ? '80' : overtimeHours + '*80'})`;
+                        timeSlot += `5小時+${overtimeHours}小時加時`;
+                    }
+                } else {
+                    alert('中班時段的結束時間只能在00:30之前喔，謝謝');
+                    return;
+                }
+            }
+            // 其他時段（白天時段）
+            else if (startHourNum >= 8 && startHourNum < 16) {
+                // 計算使用時數
+                const hoursDiff = (endDateTime - startDateTime) / (1000 * 60 * 60);
+                hours = Math.floor(hoursDiff);
+                const minutes = Math.round((hoursDiff - hours) * 60);
+                
+                if (minutes !== 0 && minutes !== 30) {
+                    alert('預約時長必須為整數小時或半小時');
+                    return;
+                }
+
+                if (hours < 3) {
+                    alert('總預約時間不能小於3小時');
+                    return;
+                }
+
+                if (hours === 24 && startHourNum === endHourNum && startMinuteNum === endMinuteNum) {
+                    // 24小時預約
+                    timeSlot = isWeekend ? '假日24小時' : '平日24小時';
+                    pricePerPerson = isWeekend ? 2000 : 1850;
+                    formula = `${effectivePeopleCount}*(${isWeekend ? 2000 : 1850})`;
+                } else if (endHourNum >= 16 || endHourNum < 8) {
+                    // 跨時段的情況
+                    const dayHours = 16 - startHourNum;
+                    const nightHours = endHourNum < 8 ? endHourNum + 24 - 16 : endHourNum - 16;
+
+                    let dayPrice = 0;
+                    let dayFormula = '';
+                    let daySlot = isWeekend ? '假日白天' : '平日白天';
+                    if (dayHours <= 3) {
+                        dayPrice = (isWeekend ? 390 : 360) * (dayHours / 3);
+                        dayFormula = dayHours === 3 ? `(${isWeekend ? 390 : 360})` : `(${isWeekend ? 390 : 360}/3*${dayHours})`;
+                        daySlot += `${dayHours}小時`;
+                    } else if (dayHours === 4) {
+                        dayPrice = (isWeekend ? 390 : 360) + 80;
+                        dayFormula = `(${isWeekend ? 390 : 360}+80)`;
+                        daySlot += '3小時+1小時加時';
+                    } else if (dayHours === 5) {
+                        dayPrice = isWeekend ? 490 : 460;
+                        dayFormula = `(${isWeekend ? 490 : 460})`;
+                        daySlot += '5小時';
+                    } else {
+                        const overtimeHours = dayHours - 5;
+                        dayPrice = (isWeekend ? 490 : 460) + overtimeHours * 80;
+                        dayFormula = `(${isWeekend ? 490 : 460}+${overtimeHours === 1 ? '80' : overtimeHours + '*80'})`;
+                        daySlot += `5小時+${overtimeHours}小時加時`;
+                    }
+
+                    let nightPrice = 0;
+                    let nightFormula = '';
+                    let nightSlot = isWeekend ? '假日中班' : '平日中班';
+                    if (nightHours < 3) {
+                        nightPrice = (isWeekend ? 450 : 420) * (nightHours / 3);
+                        nightFormula = nightHours === 3 ? `(${isWeekend ? 450 : 420})` : `(${isWeekend ? 450 : 420}/3*${nightHours})`;
+                        nightSlot += `${nightHours}小時`;
+                    } else if (nightHours === 3) {
+                        nightPrice = isWeekend ? 450 : 420;
+                        nightFormula = `(${isWeekend ? 450 : 420})`;
+                        nightSlot += '3小時';
+                    } else if (nightHours === 4) {
+                        nightPrice = (isWeekend ? 450 : 420) + 80;
+                        nightFormula = `(${isWeekend ? 450 : 420}+80)`;
+                        nightSlot += '3小時+1小時加時';
+                    } else if (nightHours === 5) {
+                        nightPrice = isWeekend ? 620 : 600;
+                        nightFormula = `(${isWeekend ? 620 : 600})`;
+                        nightSlot += '5小時';
+                    } else {
+                        const overtimeHours = nightHours - 5;
+                        nightPrice = (isWeekend ? 620 : 600) + overtimeHours * 80;
+                        nightFormula = `(${isWeekend ? 620 : 600}+${overtimeHours === 1 ? '80' : overtimeHours + '*80'})`;
+                        nightSlot += `5小時+${overtimeHours}小時加時`;
+                    }
+
+                    pricePerPerson = dayPrice + nightPrice;
+                    formula = `${effectivePeopleCount}*(${dayFormula}${nightHours > 0 ? '+' + nightFormula : ''})`;
+                    timeSlot = `${daySlot}${nightHours > 0 ? '+' + nightSlot : ''}`;
+                } else {
+                    // 純白天時段
+                    timeSlot = isWeekend ? '假日白天' : '平日白天';
+                    if (hours <= 3) {
+                        pricePerPerson = (isWeekend ? 390 : 360) * (hours / 3);
+                        formula = hours === 3 ? `${effectivePeopleCount}*(${isWeekend ? 390 : 360})` : `${effectivePeopleCount}*(${isWeekend ? 390 : 360}/3*${hours})`;
+                        timeSlot += `${hours}小時`;
+                    } else if (hours === 4) {
+                        pricePerPerson = (isWeekend ? 390 : 360) + 80;
+                        formula = `${effectivePeopleCount}*(${isWeekend ? 390 : 360}+80)`;
+                        timeSlot += '3小時+1小時加時';
+                    } else if (hours === 5) {
+                        pricePerPerson = isWeekend ? 490 : 460;
+                        formula = `${effectivePeopleCount}*(${isWeekend ? 490 : 460})`;
+                        timeSlot += '5小時';
+                    } else {
+                        const overtimeHours = hours - 5;
+                        pricePerPerson = (isWeekend ? 490 : 460) + overtimeHours * 80;
+                        formula = `${effectivePeopleCount}*(${isWeekend ? 490 : 460}+${overtimeHours === 1 ? '80' : overtimeHours + '*80'})`;
+                        timeSlot += `5小時+${overtimeHours}小時加時`;
+                    }
+                }
+            } else {
+                // 其他時段
+                timeSlot = '';
+                pricePerPerson = 0;
+                formula = '';
+            }
+
+            // 計算總價
+            const totalAdmission = pricePerPerson * effectivePeopleCount;
+            const deposit = Math.min(adultCount * 500, 3000);
+            const childDeposit = childCount * 0.8 * 500;
+            const finalPayment = totalAdmission + deposit + childDeposit - 500;
+
+            // 顯示結果
+            document.getElementById('totalPrice').textContent = finalPayment.toLocaleString();
+            const timeRangeText = startYear === endYear && startMonth === endMonth && startDay === endDay
+                ? `${startYear}年${startMonth}月${startDay}日 ${startHour.toString().padStart(2, '0')}:${startMinute.toString().padStart(2, '0')} - ${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`
+                : `${startYear}年${startMonth}月${startDay}日 ${startHour.toString().padStart(2, '0')}:${startMinute.toString().padStart(2, '0')} - ${endYear}年${endMonth}月${endDay}日 ${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`;
+            document.getElementById('timeRange').textContent = timeRangeText;
+            document.getElementById('timeSlot').textContent = timeSlot;
+            document.getElementById('duration').textContent = hours;
+            document.getElementById('pricePerPerson').textContent = pricePerPerson;
+            document.getElementById('totalAdmission').textContent = totalAdmission.toFixed(1);
+            document.getElementById('priceFormula').textContent = formula;
+            document.getElementById('deposit').textContent = deposit.toLocaleString();
+            document.getElementById('childDeposit').textContent = childDeposit.toLocaleString();
+            document.getElementById('finalPayment').textContent = finalPayment.toFixed(1);
+            document.getElementById('customerNameConfirm').textContent = document.getElementById('customerName').value + '先生/小姐';
+            document.getElementById('timeRangeConfirm').textContent = startYear === endYear && startMonth === endMonth && startDay === endDay
+                ? `${startMonth}/${startDay}（${['日', '一', '二', '三', '四', '五', '六'][startDate.getDay()]}） ${startHour.toString().padStart(2, '0')}：${startMinute.toString().padStart(2, '0')} - ${endHour.toString().padStart(2, '0')}：${endMinute.toString().padStart(2, '0')}`
+                : `${startMonth}/${startDay}（${['日', '一', '二', '三', '四', '五', '六'][startDate.getDay()]}） ${startHour.toString().padStart(2, '0')}：${startMinute.toString().padStart(2, '0')} - ${endMonth}/${endDay}（${['日', '一', '二', '三', '四', '五', '六'][new Date(endYear, endMonth - 1, endDay).getDay()]}）${endHour.toString().padStart(2, '0')}：${endMinute.toString().padStart(2, '0')}`;
+            document.getElementById('durationConfirm').textContent = `（共${hours}小時）`;
+            document.getElementById('priceResult').style.display = 'block';
+            document.getElementById('refundResult').style.display = 'none';
+            document.getElementById('pricePerPersonConfirm').textContent = pricePerPerson.toLocaleString();
+            document.getElementById('depositMinusDownConfirm').textContent = (deposit + childDeposit - 500).toLocaleString();
+            document.getElementById('depositRefundConfirm').textContent = (deposit + childDeposit).toLocaleString();
+            document.getElementById('reservationDateConfirm').textContent = `${startMonth}/${startDay}（${['日', '一', '二', '三', '四', '五', '六'][startDate.getDay()]}）`;
+            document.getElementById('reservationTimeConfirm').textContent = `${startHour.toString().padStart(2, '0')}：${startMinute.toString().padStart(2, '0')}-${endHour.toString().padStart(2, '0')}：${endMinute.toString().padStart(2, '0')}（${hours}小時）`;
+            
+            // 計算密碼有效期的開始時間（遊玩時間開始前10分鐘）
+            const passwordStartDateTime = new Date(startDateTime);
+            passwordStartDateTime.setMinutes(passwordStartDateTime.getMinutes() - 10);
+            document.getElementById('passwordStartTime').textContent = `${passwordStartDateTime.getFullYear()}-${(passwordStartDateTime.getMonth() + 1).toString().padStart(2, '0')}-${passwordStartDateTime.getDate().toString().padStart(2, '0')} ${passwordStartDateTime.getHours().toString().padStart(2, '0')}：${passwordStartDateTime.getMinutes().toString().padStart(2, '0')}`;
+            
+            // 密碼有效期的結束時間（遊玩時間結束時間）
+            document.getElementById('passwordEndTime').textContent = `${endYear}-${endMonth.toString().padStart(2, '0')}-${endDay.toString().padStart(2, '0')} ${endHour.toString().padStart(2, '0')}：${endMinute.toString().padStart(2, '0')}`;
+
+            document.getElementById('reminderPricePerPerson').textContent = pricePerPerson.toLocaleString();
+            document.getElementById('reminderDepositMinusDown').textContent = (deposit + childDeposit - 500).toLocaleString();
+            document.getElementById('reminderStartTime').textContent = `${startHour.toString().padStart(2, '0')}：${startMinute.toString().padStart(2, '0')}`;
+
+            // 修改頁面標題
+            const customerName = document.getElementById('customerName').value;
+            document.title = `${startMonth}/${startDay} ${startHour.toString().padStart(2, '0')}：${startMinute.toString().padStart(2, '0')} ${customerName}`;
+
+            // 在 calculatePrice 函數中添加以下代碼
+            document.getElementById('playTimeConfirm').textContent = startYear === endYear && startMonth === endMonth && startDay === endDay
+                ? `✅遊玩時間：${startYear}年${startMonth}月${startDay}日（${['日', '一', '二', '三', '四', '五', '六'][startDate.getDay()]}）${startHour.toString().padStart(2, '0')}：${startMinute.toString().padStart(2, '0')}-${endHour.toString().padStart(2, '0')}：${endMinute.toString().padStart(2, '0')}`
+                : `✅遊玩時間：${startYear}年${startMonth}月${startDay}日（${['日', '一', '二', '三', '四', '五', '六'][startDate.getDay()]}）${startHour.toString().padStart(2, '0')}：${startMinute.toString().padStart(2, '0')}-${endMonth}月${endDay}日（${['日', '一', '二', '三', '四', '五', '六'][new Date(endYear, endMonth - 1, endDay).getDay()]}）${endHour.toString().padStart(2, '0')}：${endMinute.toString().padStart(2, '0')}`;
+        }
+
+        // 計算退款金額的函數
+        function calculateRefund() {
+            const totalAdmission = parseFloat(document.getElementById('totalAdmission').textContent.replace(/,/g, ''));
+            const deposit = parseFloat(document.getElementById('deposit').textContent.replace(/,/g, ''));
+            const childDeposit = parseFloat(document.getElementById('childDeposit').textContent.replace(/,/g, ''));
+            const discountRate = parseFloat(document.getElementById('discountRate').value);
+            
+            // 計算折扣後的金額
+            const discountedAmount = Math.round(totalAdmission * discountRate);
+            const discountDifference = totalAdmission - discountedAmount;
+            
+            // 計算退款總額（差額 + 押金）
+            const refundAmount = discountDifference + deposit + childDeposit;
+            
+            // 顯示結果
+            document.getElementById('originalAmount').textContent = totalAdmission.toLocaleString();
+            document.getElementById('discountedAmount').textContent = discountedAmount.toLocaleString();
+            document.getElementById('discountDifference').textContent = discountDifference.toLocaleString();
+            document.getElementById('depositAndDown').textContent = (deposit + childDeposit).toLocaleString();
+            document.getElementById('refundAmount').textContent = refundAmount.toLocaleString();
+            
+            // 顯示結果區塊
+            document.getElementById('refundResult').style.display = 'block';
+        }
+
+        // 確認登記定金的函數
+        async function confirmDeposit() {
+            const customerName = document.getElementById('customerName').value;
+            const now = new Date();
+            const currentDate = `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}`;
+
+            try {
+                await recordDeposit({
+                    date: currentDate,
+                    customerName: customerName
+                });
+                alert('定金記錄已成功保存');
+            } catch (error) {
+                console.error('記錄定金失敗:', error);
+                alert('記錄定金失敗，請重試');
+            }
+        }
+
+        // 確認登記尾款的函數
+        async function confirmFinalPayment() {
+            const customerName = document.getElementById('customerName').value;
+            const now = new Date();
+            const currentDate = `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}`;
+
+            try {
+                await recordFinalPayment({
+                    date: currentDate,
+                    name: customerName
+                });
+                alert('尾款記錄已成功保存');
+            } catch (error) {
+                console.error('記錄尾款失敗:', error);
+                alert('記錄尾款失敗，請重試');
+            }
+        }
+
+        // 確認登記退款的函數
+        async function confirmRefund() {
+            try {
+                const customerName = document.getElementById('customerName').value;
+                const totalAdmission = parseFloat(document.getElementById('totalAdmission').textContent.replace(/,/g, ''));
+                const deposit = parseFloat(document.getElementById('deposit').textContent.replace(/,/g, ''));
+                const childDeposit = parseFloat(document.getElementById('childDeposit').textContent.replace(/,/g, ''));
+                const discountRate = parseFloat(document.getElementById('discountRate').value);
+                const now = new Date();
+                const currentDate = `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}`;
+                
+                if (!customerName) {
+                    alert('請輸入姓名');
+                    return;
+                }
+
+                // 計算折扣後的金額和差額
+                const discountedAmount = Math.round(totalAdmission * discountRate);
+                const discountDifference = totalAdmission - discountedAmount;
+                
+                // 計算退款總額
+                const refundAmount = discountDifference + deposit + childDeposit;
+
+                await recordRefund({
+                    name: customerName,
+                    refundAmount: refundAmount,
+                    date: currentDate
+                });
+                alert('退款記錄已成功保存');
+            } catch (error) {
+                console.error('記錄退款失敗:', error);
+                alert('記錄退款失敗，請重試');
+            }
+        }
+    </script>
+    <script src="googleSheets.js"></script>
+</body>
+</html>
