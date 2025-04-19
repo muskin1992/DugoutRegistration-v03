@@ -1,7 +1,7 @@
 // Google Sheets API 配置
 const SPREADSHEET_ID = '1bmXl1dnkSxD0Tynsn8Sm1DnJoosngvFysEkBjXjTTpM'; // 試算表 ID
 const SHEET_NAME = '工作表1'; // 試算表的工作表名稱
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwKd_WFoH3h0-aDlx6YQRjvPmUeKv-MaB6RVhYG7UbabuM2uhM7jJ7KZvvM5B5EtvD-jA/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwf3Fs1dAp_amPmxUR351d_iOHy6t-2_FFDYC9WPXxP9p5iFjYzcNWtBTcpPS9KaHXZFA/exec';
 
 // 發送數據到 Google Sheets
 async function sendToGoogleSheets(data) {
